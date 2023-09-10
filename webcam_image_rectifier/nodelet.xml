@@ -1,0 +1,9 @@
+<library path="lib/libwebcam_image_rectifier">
+  <class name="webcam_image_rectifier/WebcamImageRectifierNodelet"
+         type="webcam_image_rectifier::WebcamImageRectifierNodelet"
+         base_class_type="nodelet::Nodelet">
+    <description>
+      This nodelet to rectify fisheye camera images
+    </description>
+  </class>
+</library>

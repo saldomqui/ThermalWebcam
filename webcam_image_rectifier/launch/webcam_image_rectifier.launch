@@ -1,0 +1,35 @@
+<launch>
+  <arg name="camera_name" default="camera_1" />
+  <arg name="image_in" default="/$(arg camera_name)/image_raw" />
+  <arg name="image_out" default="/$(arg camera_name)/image_rectified" />
+  <arg name="camera_calibration_folder" default="$(find webcam_image_rectifier)/calibration/$(arg camera_name)"/>
+  <arg name="debug" default="true" />
+  <arg name="horiz_cal_dist_mm" default="144.0" /> <!-- horizontal fov of the rectified image in degrees -->
+
+  <arg name="launch_nodelet_manager" default="false"/>
+  <arg name="nodelet_manager" default="webcam_nodelet_manager"/>
+
+  <node pkg="nodelet" type="nodelet" name="$(arg nodelet_manager)" args="manager" if="$(arg launch_nodelet_manager)" output="screen"/>
+
+  <!-- NODELET -->
+  <node pkg="nodelet" type="nodelet" name="webcam_image_rectifier_$(arg camera_name)_nodelet" args="load webcam_image_rectifier/WebcamImageRectifierNodelet $(arg nodelet_manager)" >
+    <remap from="image_in" to="$(arg image_in)" />
+    <remap from="image_out" to="$(arg image_out)" />
+    <param name="camera_name" type="string" value="$(arg camera_name)" /> 
+    <param name="calibration_folder" type="string" value="$(arg camera_calibration_folder)" />
+</node>
+
+<!-- NODE -->
+<!--   <node name="webcam_image_rectifier_$(arg camera_name)" pkg="webcam_image_rectifier" type="webcam_image_rectifier_node" cwd="node" respawn="true" output="screen">
+    <remap from="image_in" to="$(arg image_in)" />
+    <remap from="image_out" to="$(arg image_out)" />
+    <param name="camera_name" type="string" value="$(arg camera_name)" /> 
+    <param name="calibration_folder" type="string" value="$(arg camera_calibration_folder)" />
+</node>-->
+
+  <group if="$(arg debug)">
+    <node name="image_rectified__$(arg camera_name)" pkg="rqt_image_view" type="rqt_image_view" respawn="true" output="screen">
+      <remap from="image" to="$(arg image_out)" />
+    </node>
+  </group>
+</launch>

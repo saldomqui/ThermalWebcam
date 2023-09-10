@@ -1,0 +1,41 @@
+<launch>
+  <arg name="use_bagfile" value="false" /> <!-- set to true if you are using a bag file instead of the real cameras -->
+
+  <arg name="camera_name" value="webcam" /> <!-- set to 'not_used' if you don't want to use this camera -->
+  <arg name="webcam_device" default="/dev/video0" />
+    
+  <arg name="camera_calibration_folder"  value="$(find webcam_calibration)/calibration/$(arg camera_name)" />
+  <arg name="config_file" value="config_webcam.yaml" />
+  <arg name="debug" value="true" /><!-- if you want to see the captured image in a ROS image_view  window -->
+
+  <arg name="launch_nodelet_manager" value="true" />
+  <arg name="nodelet_manager" value="webcam_nodelet_manager" />
+
+
+  <group ns="$(arg camera_name)" if="$(eval arg('camera_name') != 'not_used')">
+    <node pkg="nodelet" type="nodelet" name="$(arg nodelet_manager)" args="manager" if="$(arg launch_nodelet_manager)" output="screen" />
+
+    <!--               CAPTURE                    -->
+    <include file="$(find webcam_driver)/launch/webcam_driver.launch"  if="$(eval arg('use_bagfile') == false)">
+      <arg name="use_nodelet" value="true" />
+      <arg name="launch_nodelet_manager" value="false" />
+      <arg name="debug" value="$(arg debug)" />
+      <arg name="camera_name" value="$(arg camera_name)" />
+      <arg name="image_raw_topic" value="image_raw" />
+      <arg name="config_file" value="$(arg config_file)" />
+      <arg name="rtsp_resource" value="$(arg webcam_device)" />
+    </include>
+
+    <!--             RECTIFICATION                     -->
+    <include file="$(find webcam_image_rectifier)/launch/webcam_image_rectifier.launch">
+      <arg name="launch_nodelet_manager" value="false" />
+      <arg name="nodelet_manager" value="$(arg nodelet_manager)" />
+      <arg name="debug" value="$(arg debug)" /> <!-- if you want to see the rectified image in a ROS  image_view window -->
+      <arg name="camera_name" value="$(arg camera_name)" />
+      <arg name="camera_calibration_folder"   value="$(arg camera_calibration_folder)" />
+  
+    </include>
+  </group>
+
+
+</launch>

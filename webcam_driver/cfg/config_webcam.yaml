@@ -1,0 +1,7 @@
+capture_fps: 15 
+capture_delay: 0.0 #seconds
+
+capture_width: 640
+capture_height: 480
+
+

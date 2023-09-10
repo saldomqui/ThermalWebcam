@@ -1,0 +1,38 @@
+<launch>
+  <arg name="camera_name" default="camera_1" />
+  <arg name="image_in" default="$(arg camera_name)/image_raw" />
+  <arg name="debug" default="false" />
+  <arg name="calibrate" default="true" />
+  <arg name="calibration_folder"  default="$(find webcam_calibration)/calibration/$(arg camera_name)" />
+  <arg name="horiz_dist_incr_mm" default="10.0" />
+  <arg name="vert_dist_incr_mm" default="10.0" />
+  <arg name="focal_corr_dist" default="0.0" /> <!-- correction distance of the focus of the focus of the camera with respect to the center of the calibrator -->
+  <arg name="horiz_calib_dist_mm" default="81.0" />
+  <arg name="vert_calib_dist_mm" default="59.5" />
+  <arg name="threshold_val" default="180" />
+  
+  <node pkg="webcam_calibration" type="webcam_calibration_node"  name="webcam_calibration" output="screen" respawn="true">
+    <remap from="image_in" to="$(arg image_in)" />
+
+    <param name="calibrate" type="bool" value="$(arg calibrate)" />
+    <param name="threshold_val" type="int" value="$(arg threshold_val)" />
+
+    <param name="process_each" type="int" value="5" />
+
+    <!-- FOV of the camera -->
+    <param name="horiz_calib_dist_mm" type="double" value="$(arg horiz_calib_dist_mm)" />
+    <param name="vert_calib_dist_mm" type="double" value="$(arg vert_calib_dist_mm)" />
+    <param name="focal_corr_dist" type="double" value="$(arg focal_corr_dist)" />
+  
+    <!-- HOLES pattern -->
+    <param name="horiz_dist_incr_mm" type="double" value="$(arg horiz_dist_incr_mm)" />
+    <param name="vert_dist_incr_mm" type="double" value="$(arg vert_dist_incr_mm)" />
+
+    <param name="calibration_folder" type="string" value="$(arg calibration_folder)" />
+  </node>
+
+  <node name="img_view_debug_img" pkg="rqt_image_view" type="rqt_image_view" respawn="true"  output="screen" if="$(arg debug)">
+    <remap from="image" to="$(arg camera_name)/debug_img" />
+  </node>
+
+</launch>

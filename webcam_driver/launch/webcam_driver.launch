@@ -1,0 +1,34 @@
+<launch>
+  <arg name="debug" default="false" /> <!-- set to true to view the image or false to launch just the driver of the camera -->
+  <arg name="camera_name" default="camera_1" />
+  <arg name="image_raw_topic" default="image_raw" />
+  <arg name="use_nodelet" default="true" />
+  <arg name="config_file" default="config_webcam.yaml" />
+
+  <arg name="launch_nodelet_manager" default="true"/>
+  <arg name="nodelet_manager" default="webcam_nodelet_manager"/>
+
+  <arg name="rtsp_resource" default="/dev/video0" />
+
+  <node pkg="nodelet" type="nodelet" name="$(arg nodelet_manager)" args="manager" if="$(arg launch_nodelet_manager)" output="screen"/>
+
+  <node pkg="nodelet" type="nodelet" name="rtsp_cam_driver_$(arg camera_name)_nodelet" args="load rtsp_cam_driver/DriverRtspCamNodelet $(arg nodelet_manager)" if="$(eval arg('use_nodelet') == True)">
+    <param name="frame_id" type="string" value="$(arg camera_name)" />
+    <param name="config_file" type="string" value="$(find webcam_driver)/cfg/$(arg config_file)" />
+    <param name="rtsp_resource" value="$(arg rtsp_resource)" />
+    <param name="image_raw_topic" type="string" value="$(arg image_raw_topic)" />
+  </node>
+
+  <node pkg="webcam_driver" type="rtsp_cam_driver_node" name="rtsp_cam_driver_$(arg camera_name)" output="screen" respawn="true" if="$(eval arg('use_nodelet') == False)">
+    <param name="frame_id" type="string" value="$(arg camera_name)" />
+    <param name="config_file" type="string" value="$(find webcam_driver)/cfg/$(arg config_file)" />
+    <param name="rtsp_resource" value="$(arg rtsp_resource)" />
+    <param name="image_raw_topic" type="string" value="$(arg image_raw_topic)" />
+  </node>
+
+  <!-- VISUALIZATION -->
+  <node name="image_raw_$(arg camera_name)" pkg="rqt_image_view" type="rqt_image_view" respawn="true" output="screen" if="$(arg debug)" >
+    <remap from="image" to="$(arg image_raw_topic)" />
+  </node>
+
+</launch>

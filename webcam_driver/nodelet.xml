@@ -1,0 +1,9 @@
+<library path="lib/librtsp_cam_driver">
+  <class name="rtsp_cam_driver/DriverRtspCamNodelet"
+         type="rtsp_cam_driver::DriverRtspCamNodelet"
+         base_class_type="nodelet::Nodelet">
+    <description>
+      This nodelet captures images from a rtsp camera
+    </description>
+  </class>
+</library>
