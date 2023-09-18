@@ -232,7 +232,7 @@ namespace MAP_INP
                     cout << "saga_fisheyecam_calibration: Can't read calibration point:" << i << endl;
                     return false;
                 }
-                catch (YAML::InvalidScalar)
+                catch (YAML::InvalidScalar &ex)
                 {
                     cout << "saga_fisheyecam_calibration: Can't read scalar on node:" << i << endl;
                     return false;

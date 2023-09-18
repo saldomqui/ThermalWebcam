@@ -31,7 +31,7 @@ bool loadConfigFile(const string &file, config &cfg)
     cfg.capture_delay = doc["capture_delay"].as<float>();
     cout << "capture_delay:" << cfg.capture_delay << endl;
   }
-  catch (YAML::InvalidScalar)
+  catch (YAML::InvalidScalar &ex)
   {
     cout << "Calibration file does not contain a tag for capture_delay value or it is invalid." << endl;
     return false;

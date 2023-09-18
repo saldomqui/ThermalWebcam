@@ -127,7 +127,7 @@ namespace rtsp_cam_driver
                 cfg.capture_fps = doc["capture_fps"].as<int>();
                 NODELET_INFO("capture_fps:%d", cfg.capture_fps);
             }
-            catch (YAML::InvalidScalar)
+            catch (YAML::InvalidScalar &ex)
             {
                 cout << "Calibration file does not contain a tag for capture_fps value or it is invalid." << endl;
                 return false;
@@ -137,7 +137,7 @@ namespace rtsp_cam_driver
                 cfg.capture_delay = doc["capture_delay"].as<float>();
                 NODELET_INFO("capture_delay:%f", cfg.capture_delay);
             }
-            catch (YAML::InvalidScalar)
+            catch (YAML::InvalidScalar &ex)
             {
                 cout << "Calibration file does not contain a tag for capture_delay value or it is invalid." << endl;
                 return false;
